@@ -23,9 +23,10 @@ public class Admin{
         this.password = password;
     }
     
-    public Admin(String username, String password, String nama) {
+    public Admin(String username, String password, String nik, String nama) {
         this.username = username;
         this.password = password;
+        this.nik = nik;
         this.nama = nama;
     }
 

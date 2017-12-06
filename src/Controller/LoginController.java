@@ -5,9 +5,11 @@
  */
 package Controller;
 
+import Database.Database;
 import Model.Main;
 import View.Login;
 import View.MainMenu;
+import View.NewAccount;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
@@ -19,12 +21,14 @@ import javax.swing.JOptionPane;
 public class LoginController implements ActionListener {
     private Main model;
     private Login view;
+    private Database db = new Database();
 
     public LoginController() {
         model = new Main();
         view = new Login();
         view.setVisible(true);
         view.addActionListener(this);
+        db.connect();
     }
 
     @Override
@@ -33,32 +37,33 @@ public class LoginController implements ActionListener {
         try {
             if (source.equals(view.getbtnLogin())){
                 if (view.gettfUsername().getText().equals("")||view.gettfPass().getText().equals("")){
-                    JOptionPane.showMessageDialog(null, "All data must be field");
+                    JOptionPane.showMessageDialog(view, "All data must be field");
                 } else {
                     String username=view.gettfUsername().getText();
                     String password=view.gettfPass().getText();
                     if(model.loginAdmin(username,password)){
                         view.setVisible(false);
-                        new MainMenu(model);
+                        new MainMenuController(username);
                         view.dispose();
                     } else {
-                        JOptionPane.showMessageDialog(null, "Invalid Password/Username");
+                        JOptionPane.showMessageDialog(view, "Invalid Password/Username");
                     }
                     view.settfUsername("");
                     view.settfPass("");
                 }
-                if (model.loginAdmin(view.gettfUsername().getText(), view.gettfPass().getText())){
-                    new Main();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Gagal Login", "Gagal Login", JOptionPane.ERROR_MESSAGE);
-                }
+//                if (model.loginAdmin(view.gettfUsername().getText(), view.gettfPass().getText())){
+//                    new Main();
+//                }
+//                } else {
+//                    JOptionPane.showMessageDialog(null, "Gagal Login", "Gagal Login", JOptionPane.ERROR_MESSAGE);
+//                }
             } else if (source.equals(view.getbtnSignup())){
                 view.setVisible(false);
-                new ControllerNewAccount(model);
+                new NewAccountController();
                 view.dispose();
             } else if (source.equals(view.getbtnHere())){
                 view.setVisible(false);
-                new ControllerForgotPass(model);
+                new ForgotPassController();
                 view.dispose();
             }
             

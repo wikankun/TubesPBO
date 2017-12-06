@@ -6,8 +6,8 @@
 package Database;
 import Model.*;
 import java.sql.*;
-import java.sql.*;
 import java.util.*;
+import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import javax.swing.table.*;
 /**
@@ -15,9 +15,9 @@ import javax.swing.table.*;
  * @author PC
  */
 public class Database {
-    private String server="jdbc:mysql://localhost/3306/parkiran";
-    private String dbUser ="root";
-    private String dbPasswd="";
+    private String server = "jdbc:mysql://localhost:3306/sistem_parkir";
+    private String dbUser = "root";
+    private String dbPasswd = "";
     private Statement statement = null;
     private Connection connection = null;
     private ResultSet rs = null;
@@ -35,7 +35,7 @@ public class Database {
         try {
             String query = "select * from admin where username ='"
                     + a.getUsername() + "' and password = '" + a.getPassword() + "'";
-            statement.execute(query);
+            ResultSet rs = statement.executeQuery(query);
             if (rs.next()) {
                 return true;
             } else {
@@ -49,17 +49,12 @@ public class Database {
     
     public void signUpAdmin(Admin a) {
         try {
-            String query1 = "select nik from admin where nik = '"
-                    + a.getNik() + "'";
-            statement.execute(query1);
-            if (rs.next()) {
-                String query2 = "insert into admin (username, password, nama, nik) values"
-                    + "('" + a.getUsername() + "', "
-                    + "'" + a.getPassword() + "', "
-                    + "'" + a.getNama() + "', "
-                    + "'" + a.getNik() + "')";
-                statement.execute(query2);
-            }
+            String query = "insert into admin (username, password, nik, nama) values"
+                + "('" + a.getUsername() + "', "
+                + "'" + a.getPassword() + "', "
+                + "'" + a.getNik() + "', "
+                + "'" + a.getNama() + "')";
+            statement.executeUpdate(query);
         } catch (Exception e) {
             throw new IllegalArgumentException("NIK doesn't exist");
         }
@@ -72,30 +67,30 @@ public class Database {
                 jenis = "roda2";
             } else if (k instanceof RodaEmpat){
                 jenis = "roda4";
-            } 
-            System.out.println(k.getMenitMasuk());
-            String query = "insert into kendaraan(nopol, jenis, jammasuk, menitmasuk) values"
+            }
+            String query = "insert into kendaraan (nopol, jenis, jammasuk, menitmasuk, jamkeluar, menitkeluar) values "
                     + "('" + k.getNopol() + "', "
-                    + "'" + jenis + "',"
-                    + "'" + k.getJamMasuk()+ "',"
-                    + "'" + k.getMenitMasuk()+ "',"
-                    + "'" + k.getJamKeluar()+ "',"
-                    + "'" + k.getMenitKeluar()+ "')";
-            statement.execute(query);
+                    + "'" + jenis + "', "
+                    + k.getJamMasuk() + ", "
+                    + k.getMenitMasuk() + ", "
+                    + 0 + ", "
+                    + 0 + ")";
+            System.out.println(query);
+            statement.executeUpdate(query);
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException("Problem when adding vehicle");
         }
     }
     
-    public void updateKendaraan(Kendaraan k){ // digunakan untuk penarikan dan setoran uang
+    public void updateKendaraan(Kendaraan k){
         try {
-            String query = "update kendaraan set jamkeluar = '" + k.getJamKeluar()
-                    + "' , menitkeluar = '" + k.getMenitKeluar() + "' where nopol = '" + k.getNopol() + "'";
+            String query = "update kendaraan set jamkeluar = " + k.getJamKeluar()
+                    + " , menitkeluar = " + k.getMenitKeluar() + " where nopol = '" + k.getNopol() + "'";
             statement.execute(query);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IllegalArgumentException("terjadi kesalahan saat setor uang");
+            throw new IllegalArgumentException("Problem while updating data");
         }
     }
     
@@ -104,21 +99,19 @@ public class Database {
             System.out.println(nopol);
             String query = "select * from kendaraan where nopol='" + nopol + "'";
             ResultSet rs = statement.executeQuery(query);
+            Kendaraan k = null;
             if (rs.next()) {
                 String jenis = rs.getString(2);
-                Kendaraan k;
                 if (jenis.equals("roda2")){
                     k = new RodaDua(rs.getString(1), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getInt(6));
-                    return k;
                 } else if (jenis.equals("roda4")){
                     k = new RodaEmpat(rs.getString(1), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getInt(6));
-                    return k;
                 }
             }
-            return null;
+            return k;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IllegalArgumentException("terjadi kesalahan saat load kendaraan");
+            throw new IllegalArgumentException("Problem while loading data");
         }
     }
     
@@ -141,7 +134,7 @@ public class Database {
             return lk;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IllegalArgumentException("terjadi kesalahan saat load kendaraan");
+            throw new IllegalArgumentException("Problem while loading list data");
         }
     }
     
@@ -152,8 +145,33 @@ public class Database {
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IllegalArgumentException("terjadi kesalahan saat delete");
+            throw new IllegalArgumentException("Problem while deleting data");
         }
     }
     
+    public Admin getNik(String nik){
+        try {
+            Admin a = null;
+            String query = "select * from admin where nik = '" + nik + "'";
+            ResultSet rs = statement.executeQuery(query);
+            if (rs.next()){
+                a = new Admin(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
+            }
+            return a;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("Problem while getting data");
+        }
+    }
+    
+    public void updateAdmin(String nik, String password){
+        try {
+            String query = "update admin set password = '" + password +
+                "' where nik = '" + nik + "'";
+            statement.executeUpdate(query);
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new IllegalArgumentException("Problem while updating data");
+        }
+    }
 }

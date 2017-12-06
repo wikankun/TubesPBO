@@ -2,17 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/PC/Documents/NetBeansProjects/Tubes/src/View/Login.java</file>
-            <file>file:/C:/Users/PC/Documents/NetBeansProjects/Tubes/src/Model/Transaksi.java</file>
-            <file>file:/C:/Users/PC/Documents/NetBeansProjects/Tubes/src/Model/ListKendaraan.java</file>
-            <file>file:/C:/Users/PC/Documents/NetBeansProjects/Tubes/src/View/ApkParkir.java</file>
-            <file>file:/C:/Users/PC/Documents/NetBeansProjects/Tubes/src/Model/Admin.java</file>
-            <file>file:/C:/Users/PC/Documents/NetBeansProjects/Tubes/src/Controller/LoginController.java</file>
-            <file>file:/C:/Users/PC/Documents/NetBeansProjects/Tubes/src/Model/Main.java</file>
-            <file>file:/C:/Users/PC/Documents/NetBeansProjects/Tubes/src/Model/RodaEmpat.java</file>
-            <file>file:/C:/Users/PC/Documents/NetBeansProjects/Tubes/src/Model/Kendaraan.java</file>
-            <file>file:/C:/Users/PC/Documents/NetBeansProjects/Tubes/src/Model/RodaDua.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
